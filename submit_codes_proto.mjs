@@ -49,8 +49,8 @@ function get_user() {
         (res) => res.json()
     ).then(
         (res) => {
-            this.instance_id = res.details.instance_id
             console.log(JSON.stringify(res, null, 4))
+            this.instance_id = res.details.instance_id
         }
     )
 }
@@ -112,7 +112,7 @@ ctx = {
 }
 
 await ctx.get_server()
-await ctx.get_user()
+try { await ctx.get_user() } catch { await ctx.get_user() }
 await ctx.submit_codes()
 
 console.log('END STEAM', ctx)
