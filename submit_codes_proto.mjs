@@ -12,6 +12,19 @@ const defaults = [
     ['mobile_client_version',   999],
 ]
 
+async function retry_fetch(...args) {
+    let final_err
+    for (let tries = 0; tries <= 3; tries++) {
+        try {
+            let res = await fetch(...args)
+            return res
+        } catch(err) {
+            final_err = err
+        }
+    }
+    return Error({ message: "3 tries failed", error: final_err })
+}
+
 function get_server() {
     const url = new URL('http://master.idlechampions.com/~idledragons/post.php')
     const params = new URLSearchParams([
@@ -72,7 +85,7 @@ async function submit_codes() {
         url.search = params
         console.log(url.toString())
 
-        await fetch(url, { method: 'POST', headers: {'Content-Type':'application/x-www-form-urlencoded'} }).then(
+        await retry_fetch(url, { method: 'POST', headers: {'Content-Type':'application/x-www-form-urlencoded'} }).then(
             (res) => res.json()
         ).then(
             (res) => {
