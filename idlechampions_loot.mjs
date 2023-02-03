@@ -12,7 +12,7 @@ const code_one_letter_range = '0-9A-Za-z*&^%$#@!'
 const sources = [
     sources_reddit,
     sources_discord,
-    // sources_icendar,
+    sources_icendar,
 ]
 
 function get_code_patterns() {

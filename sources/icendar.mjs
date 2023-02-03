@@ -12,21 +12,29 @@ states.fetch[0] = () => fetch(url)
 states.fetch[1] = 'parse_text'
 // states.parse_text[1] = 'log_parsed_text'
 
-states.extract_codes = [ function () {
-    let text = this.res.parse_text
-    let re = /3rd party.+?<textarea[^>]*>(.+?)<\/textarea>/s;
-    let match = re.exec(text)
+let code_blocks_re = [
+  />Active Recent<\/.+?<textarea[^>]*>(.+?)<\/textarea>/s,
+  />Active Long\-term<\/.+?<textarea[^>]*>(.+?)<\/textarea>/s,
+  />Active Permanent<\/.+?<textarea[^>]*>(.+?)<\/textarea>/s,
+]
 
+states.extract_codes = [ function () {
+  let text = this.res.parse_text
+
+  code_blocks_re.forEach((re) => {
+    let match = re.exec(text)
     let codes = match[1].split(/\s+/)
 
     console.log('>>> match', match)
     console.log('>>> codes', codes)
 
     codes.forEach((code) => {
-        this.env.push_codes_from_text({ name: name, text: code })
+      this.env.push_codes_from_text({ name: name, text: code })
     })
 
-    this.resolve(true)
+  })
+
+  this.resolve(true)
 }]
 
 export {
